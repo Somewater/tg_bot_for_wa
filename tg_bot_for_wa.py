@@ -69,7 +69,6 @@ class EchoLayer(YowInterfaceLayer):
 if __name__==  "__main__":
     starte_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     tg = telegram.Bot(token=tg_token)
-    #tg.sendMessage(chat_id=tg_chat, text="WathsApp bot started at %s" % starte_time)
 
     def tg_message(bot, update):
         print "[TG]: chat_id=%s, text=%s" % (str(update.message.chat_id), update.message.text)
@@ -79,6 +78,7 @@ if __name__==  "__main__":
         tg_updater = Updater(bot=tg)
         echo_handler = MessageHandler([Filters.text], tg_message)
         tg_updater.dispatcher.add_handler(echo_handler)
+        tg.sendMessage(chat_id=tg_chat, text="WathsApp bot started at %s" % starte_time)
         tg_updater.start_polling()
 
     tgThread = threading.Thread(target = tg_listen)
