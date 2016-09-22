@@ -43,19 +43,12 @@ class EchoLayer(YowInterfaceLayer):
 
     @ProtocolEntityCallback("message")
     def onMessage(self, messageProtocolEntity):
+        print "[WA]: chat_id=%s, text=%s" % (str(messageProtocolEntity.getFrom()), messageProtocolEntity.getBody())
         receipt = OutgoingReceiptProtocolEntity(messageProtocolEntity.getId(), messageProtocolEntity.getFrom(), \
                                                 'read', messageProtocolEntity.getParticipant())
-        # import ipdb; ipdb.set_trace()
-        # outgoingMessageProtocolEntity = TextMessageProtocolEntity(
-        #     messageProtocolEntity.getBody(),
-        #     to = messageProtocolEntity.getFrom())
-
-        if messageProtocolEntity.getBody() == 'ping':
-            self.getProp('send_queue').put('pong')
 
         self.toLower(receipt)
         self.getProp('telegram').sendMessage(chat_id=tg_chat, text=messageProtocolEntity.getBody())
-        # self.toLower(outgoingMessageProtocolEntity)
 
     @ProtocolEntityCallback("receipt")
     def onReceipt(self, entity):
@@ -79,7 +72,7 @@ if __name__==  "__main__":
     #tg.sendMessage(chat_id=tg_chat, text="WathsApp bot started at %s" % starte_time)
 
     def tg_message(bot, update):
-        #print "Tg msg: chat_id=%s, text=%s" % (str(update.message.chat_id), update.message.text)
+        print "[TG]: chat_id=%s, text=%s" % (str(update.message.chat_id), update.message.text)
         wa_send_queue.put(update.message.text)
 
     def tg_listen():
