@@ -21,6 +21,7 @@ from yowsup.layers.interface                           import YowInterfaceLayer,
 from yowsup.layers.protocol_receipts.protocolentities  import OutgoingReceiptProtocolEntity
 from yowsup.layers.protocol_acks.protocolentities      import OutgoingAckProtocolEntity
 from yowsup.layers.protocol_messages.protocolentities  import TextMessageProtocolEntity
+from yowsup.layers.protocol_presence.protocolentities  import PresenceProtocolEntity
 from yowsup.common.tools import Jid
 
 config = configparser.ConfigParser()
