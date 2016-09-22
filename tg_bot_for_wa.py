@@ -116,6 +116,7 @@ if __name__==  "__main__":
         print "Start WA loop"
         stack.loop()
     except Exception as e:
-        tg.sendMessage(chat_id=tg_chat, text="Launched at %s. Error: %s" % (starte_time, e.message))
-
+        tg.sendMessage(chat_id=tg_chat, text="WathsApp bot stopped at %s. Error: %s" % (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), e.message))
+    except:
+        tg.sendMessage(chat_id=tg_chat, text="WathsApp bot gracefully stopped at %s" % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
