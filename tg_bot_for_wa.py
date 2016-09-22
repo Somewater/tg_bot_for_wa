@@ -43,15 +43,17 @@ class EchoLayer(YowInterfaceLayer):
 
     @ProtocolEntityCallback("message")
     def onMessage(self, messageProtocolEntity):
-        print "[WA]: chat_id=%s, from=%s, text=%s" % (str(messageProtocolEntity.getFrom()),
-                                                      str(messageProtocolEntity.getAuthor()),
-                                                      messageProtocolEntity.getBody())
+        print "[WA]: chat_id=%s, from=%s, nick=%s, text=%s" % (messageProtocolEntity.getFrom(),
+                                                               messageProtocolEntity.getAuthor(),
+                                                               messageProtocolEntity.getNotify(),
+                                                               messageProtocolEntity.getBody())
         # import ipdb; ipdb.set_trace()
         receipt = OutgoingReceiptProtocolEntity(messageProtocolEntity.getId(), messageProtocolEntity.getFrom(), \
                                                 'read', messageProtocolEntity.getParticipant())
 
         self.toLower(receipt)
-        self.getProp('telegram').sendMessage(chat_id=tg_chat, text=messageProtocolEntity.getBody())
+        tg_message = "[%s][%s] %s" % (messageProtocolEntity.getFrom(), messageProtocolEntity.getNotify(), messageProtocolEntity.getBody())
+        self.getProp('telegram').sendMessage(chat_id=tg_chat, text=tg_message)
 
     @ProtocolEntityCallback("receipt")
     def onReceipt(self, entity):
@@ -59,7 +61,7 @@ class EchoLayer(YowInterfaceLayer):
         self.toLower(ack)
 
     def listenSendQueue(self):
-        while not self.getStack():
+        while not self.getStack() or not self.getProp('send_queue'):
             pass
         sendQueue = self.getProp('send_queue')
         while True:
@@ -102,6 +104,7 @@ if __name__==  "__main__":
     stack.setCredentials((wa_phone, wa_pass))
     stack.broadcastEvent(YowLayerEvent(YowNetworkLayer.EVENT_STATE_CONNECT))
     try:
+        print "Start WA loop"
         stack.loop()
     except Exception as e:
         tg.sendMessage(chat_id=tg_chat, text="Launched at %s. Error: %s" % (starte_time, e.message))
