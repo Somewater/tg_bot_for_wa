@@ -31,6 +31,7 @@ tg_chat = config.get('access', 'tg_chat')
 wa_phone = config.get('access', 'wa_phone')
 wa_pass = config.get('access', 'wa_pass')
 wa_chat = config.get('access', 'wa_chat')
+wa_nickname = config.get('access', 'wa_nickname')
 wa_send_queue = Queue.Queue()
 
 class EchoLayer(YowInterfaceLayer):
@@ -59,6 +60,12 @@ class EchoLayer(YowInterfaceLayer):
     def onReceipt(self, entity):
         ack = OutgoingAckProtocolEntity(entity.getId(), "receipt", entity.getType(), entity.getFrom())
         self.toLower(ack)
+
+    @ProtocolEntityCallback("success")
+    def onSuccess(self, entity):
+        nickname = self.getProp('wa_nickname')
+        if nickname:
+            self.toLower(PresenceProtocolEntity(name = nickname))
 
     def listenSendQueue(self):
         while not self.getStack() or not self.getProp('send_queue'):
@@ -101,6 +108,7 @@ if __name__==  "__main__":
     stack.setProp('telegram', tg)
     stack.setProp('send_queue', wa_send_queue)
     stack.setProp('wa_chat', wa_chat)
+    stack.setProp('wa_nickname', wa_nickname)
     stack.setCredentials((wa_phone, wa_pass))
     stack.broadcastEvent(YowLayerEvent(YowNetworkLayer.EVENT_STATE_CONNECT))
     try:
