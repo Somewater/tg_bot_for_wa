@@ -43,7 +43,10 @@ class EchoLayer(YowInterfaceLayer):
 
     @ProtocolEntityCallback("message")
     def onMessage(self, messageProtocolEntity):
-        print "[WA]: chat_id=%s, text=%s" % (str(messageProtocolEntity.getFrom()), messageProtocolEntity.getBody())
+        print "[WA]: chat_id=%s, from=%s, text=%s" % (str(messageProtocolEntity.getFrom()),
+                                                      str(messageProtocolEntity.getAuthor()),
+                                                      messageProtocolEntity.getBody())
+        # import ipdb; ipdb.set_trace()
         receipt = OutgoingReceiptProtocolEntity(messageProtocolEntity.getId(), messageProtocolEntity.getFrom(), \
                                                 'read', messageProtocolEntity.getParticipant())
 
@@ -72,6 +75,7 @@ if __name__==  "__main__":
 
     def tg_message(bot, update):
         print "[TG]: chat_id=%s, text=%s" % (str(update.message.chat_id), update.message.text)
+        # import ipdb; ipdb.set_trace()
         wa_send_queue.put(update.message.text)
 
     def tg_listen():
